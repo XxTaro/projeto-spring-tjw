@@ -1,6 +1,7 @@
 package br.gustavo.lopes.MySpringApp.controller;
 
 import br.gustavo.lopes.MySpringApp.model.User;
+import br.gustavo.lopes.MySpringApp.service.impl.StockServiceImpl;
 import br.gustavo.lopes.MySpringApp.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,9 @@ public class UserController {
 
     @Autowired
     UserServiceImpl userService;
+
+    @Autowired
+    StockServiceImpl stockService;
 
     @GetMapping("/create")
     public String createHome() {
@@ -36,6 +40,7 @@ public class UserController {
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") long id) {
+        stockService.findAllByUserId(id).forEach(stock -> stockService.delete(stock.getId()));
         userService.delete(id);
         return "redirect:/user/list";
     }
